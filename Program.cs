@@ -33,9 +33,9 @@ builder.Services.AddSwaggerGen(c =>
     //   "Bearer eyJhbGci..."   ← con el prefijo incluido
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Name        = "Authorization",
-        Type        = SecuritySchemeType.ApiKey,   // ← ApiKey controla el header completo
-        In          = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,   // ← ApiKey controla el header completo
+        In = ParameterLocation.Header,
         Description = "Ingresá el token con el prefijo 'Bearer '. Ejemplo: Bearer eyJhbGci..."
     });
 
@@ -58,24 +58,24 @@ builder.Services.AddSwaggerGen(c =>
 
 // 2. AUTENTICACIÓN JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var secretKey   = jwtSettings["Key"]!;
+var secretKey = jwtSettings["Key"]!;
 
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme    = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer           = true,
-        ValidateAudience         = true,
-        ValidateLifetime         = true,
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer              = jwtSettings["Issuer"],
-        ValidAudience            = jwtSettings["Audience"],
-        IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
     };
 });
 
@@ -118,7 +118,7 @@ app.MapPost("/api/auth/login", (LoginRequest request) =>
         return Results.Unauthorized();
 
     // Generación del token JWT
-    var key   = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
     var claims = new[]
     {
@@ -128,10 +128,10 @@ app.MapPost("/api/auth/login", (LoginRequest request) =>
 
     var expiracion = int.Parse(jwtSettings["ExpiresInMinutes"] ?? "60");
     var token = new JwtSecurityToken(
-        issuer:             jwtSettings["Issuer"],
-        audience:           jwtSettings["Audience"],
-        claims:             claims,
-        expires:            DateTime.UtcNow.AddMinutes(expiracion),
+        issuer: jwtSettings["Issuer"],
+        audience: jwtSettings["Audience"],
+        claims: claims,
+        expires: DateTime.UtcNow.AddMinutes(expiracion),
         signingCredentials: creds
     );
 

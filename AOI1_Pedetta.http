@@ -1,0 +1,6 @@
+@AOI1_Pedetta_HostAddress = http://localhost:5110
+
+GET {{AOI1_Pedetta_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
